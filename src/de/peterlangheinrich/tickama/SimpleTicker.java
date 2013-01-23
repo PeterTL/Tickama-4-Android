@@ -13,6 +13,13 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
 
+// Twitter-Test BOF
+import twitter4j.*;
+import twitter4j.conf.ConfigurationBuilder;
+
+import java.util.List;
+// Twitter-Test EOF
+
 public class SimpleTicker extends Activity {
 
 	@Override
@@ -33,6 +40,32 @@ public class SimpleTicker extends Activity {
 			txtLabel.setText("ICH BIN ONLINE.");
 		else
 			txtLabel.setText("ICH BIN NICHT ONLINE.");
+		
+		// Twitter-Test BOF
+		ConfigurationBuilder cb = new ConfigurationBuilder();
+		cb.setDebugEnabled(true)
+		  .setOAuthConsumerKey("1FLcEWVVDMiR5yWq4l0nsQ")
+		  .setOAuthConsumerSecret("nxm3etPzLSzWM1aNfhikJ2RL7kb16OSJQGlIKJO30")
+		  .setOAuthAccessToken("15127195-CW9ZFSsbo8BpcW3Wo8bnegCEXkvsSSwepoU4lXotk")
+		  .setOAuthAccessTokenSecret("C1rI3zwiJrcOsYZaOzJfYvgCB5bTKgGdNluFSylew");
+		try {
+			Twitter twitter = new TwitterFactory(cb.build()).getInstance();
+			Query query = new Query("Apple");
+			QueryResult result;
+			do {
+				result = twitter.search(query);
+				List<Status> tweets = result.getTweets();
+				for (Status tweet : tweets) {
+					// TODO
+					txtLabel.setText("@" + tweet.getUser().getScreenName() + " - " + tweet.getText());
+				}
+			} while ((query = result.nextQuery()) != null);	
+		} catch (TwitterException te) {
+            te.printStackTrace();
+            System.out.println("Failed to search tweets: " + te.getMessage());
+            System.exit(-1);
+        }
+		// Twitter-Test EOF
 	}
 
 	@Override
